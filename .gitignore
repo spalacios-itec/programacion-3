@@ -1,2 +1,3 @@
 src_app/vendor/
 db-mysql/
+src_app/.env
