@@ -4,18 +4,22 @@ namespace App\Controllers;
 
 use App\Models\User;
 
-class UserController {
+class UserController extends BaseController {
 
     /**
-     *
+     * @return string
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      */
     public function indexAction(){
         $users = User::all();
-
-        foreach ($users as $user){
-            echo "$user->firstname $user->lastname ($user->email)";
-            echo "<br>";
-        }
+        return $this->renderHTML('user_index.twig',
+            [
+                'users' => $users->toArray(),
+                'title' => 'Listado de Usuarios'
+            ]
+        );
     }
 
     /**
