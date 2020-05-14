@@ -3,18 +3,19 @@
 namespace App\Controllers;
 
 use App\Models\User;
+use Zend\Diactoros\ServerRequest;
 
 class UserController extends BaseController {
 
     /**
-     * @return string
+     * @return \Zend\Diactoros\Response\HtmlResponse
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      */
     public function indexAction(){
         $users = User::all();
-        return $this->renderHTML('user_index.twig',
+        return $this->renderHTML('Users/index.twig',
             [
                 'users' => $users->toArray(),
                 'title' => 'Listado de Usuarios'
@@ -23,28 +24,30 @@ class UserController extends BaseController {
     }
 
     /**
-     * @param string $username
+     * @param ServerRequest $request
+     * @return \Zend\Diactoros\Response\HtmlResponse
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      */
-    public function getAction(string $username){
-        $user = User::query()->where('email', $username);
+    public function createAction(ServerRequest $request)
+    {
+        if(!empty($_POST)){
+            $data = $request->getParsedBody();
 
-//        foreach ($users as $user){
-//            echo "$user->firstname $user->lastname ($user->email)";
-//            echo "<br>";
-//        }
-    }
+            $user = new User();
+            $user->firstname = $data['firstname'];
+            $user->lastname = $data['lastname'];
+            $user->email = $data['email'];
+            $user->password = md5($data['password']);
+            $user->save();
+        }
 
-    public function addAction(){
-        echo getenv('UPLOAD_PRODUCT_PATH').'/user_profile.png';
-    }
-
-    public function editAction(){
-
-    }
-
-    // user/3/delete
-    // deleteUser.php?id=3
-    public function deleteAction(){
-
+        return isset($user) ? $this->indexAction() :
+            $this->renderHTML('Users/new.twig',
+            [
+                'title' => 'Nuevo usuario'
+            ]
+        );
     }
 }

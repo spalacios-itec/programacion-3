@@ -15,9 +15,6 @@ $dotenv->load();
 $log = new Logger('test');
 $log->pushHandler(new StreamHandler(__DIR__.'/../logs/prod.log', Logger::WARNING));
 
-$log->warning('wellcome');
-
-
 $capsule = new Capsule;
 $capsule->addConnection([
     'driver'    => getenv('DB_DRIVER'),
@@ -48,17 +45,23 @@ $map = $routerContainer->getMap();
 
 // Routing
 $map->get('home_index', '/', '../index.php');
-$map->get('paises', '/paises', '../paises.php');
-$map->get('user', '/users',
+$map->get('paises', '/paises', '../countries.twig');
+$map->get('user', '/user',
     [
         'controller' => 'App\Controllers\UserController',
         'action'     => 'indexAction'
     ]
 );
-$map->get('user_add', '/users/add',
+$map->get('user_new', '/user/new',
     [
         'controller' => 'App\Controllers\UserController',
-        'action'     => 'addAction'
+        'action'     => 'createAction'
+    ]
+);
+$map->post('user_save', '/user/new',
+    [
+        'controller' => 'App\Controllers\UserController',
+        'action'     => 'createAction'
     ]
 );
 
@@ -73,7 +76,7 @@ if(!$route){
     $actionName     =  $handlerData['action'];
 
     $controller = new $controllerName;
-    $response   = $controller->$actionName();
+    $response   = $controller->$actionName($request);
 
     echo $response->getBody();
 }

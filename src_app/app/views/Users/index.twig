@@ -4,14 +4,12 @@
 
 {% block container %}
     <h1>Users</h1>
+    <a class="btn btn-primary" href="/user/new">New User</a>
     <ul>
         {% for user in users %}
             <li>{{ user.firstname }}, {{ user.lastname }} ({{ user.email }})</li>
         {% endfor %}
     </ul>
+
 {% endblock %}
 
-{% block javascripts %}
-    <script src="/users.min.js"></script>
-    {{ parent() }}
-{% endblock %}
