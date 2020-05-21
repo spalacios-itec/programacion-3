@@ -1,0 +1,9 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block container %}
+    <h1>View User {{ user.id }}</h1>
+    <h2>{{ user.firstname }}, {{ user.lastname }} ({{ user.email }})</h2>
+{% endblock %}
+

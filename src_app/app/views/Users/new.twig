@@ -7,12 +7,22 @@
     <form method="post" action="/user/new">
         <div class="form-group">
             <label>Firstname</label>
-            <input class="form-control" type="text" placeholder="Firstname" name="firstname">
+            <input class="form-control {{ (errors.firstname is defined) ? 'is-invalid' : (user.firstname is defined) ? 'is-valid' }}" type="text" placeholder="Firstname" name="firstname" value="{{ (user.firstname is defined) ? user.firstname : null }}">
+            {% if errors.firstname is defined %}
+                <div class="invalid-feedback">
+                    {{ errors.firstname|capitalize }}
+                </div>
+            {% endif %}
         </div>
 
         <div class="form-group">
             <label>Lastname</label>
-            <input class="form-control" type="text" placeholder="Lastname" name="lastname">
+            <input class="form-control {{ (errors.lastname is defined) ? 'is-invalid' : (user.lastname is defined) ? 'is-valid' }}" type="text" placeholder="Lastname" name="lastname" value="{{ (user.lastname is defined) ? user.lastname : null }}">
+            {% if errors.lastname is defined %}
+                <div class="invalid-feedback">
+                    {{ errors.lastname|capitalize }}
+                </div>
+            {% endif %}
         </div>
 
         <div class="form-group">
@@ -22,6 +32,10 @@
         <div class="form-group">
             <label>Password</label>
             <input class="form-control" type="password" placeholder="Password" name="password">
+        </div>
+        <div class="form-group">
+            <label>Password Repeat</label>
+            <input class="form-control" type="password" placeholder="Password Repeat" name="passwordRepeat">
         </div>
         <input type="submit" class="btn btn-primary" value="Send">
     </form>

@@ -52,21 +52,53 @@ $map->get('user', '/user',
         'action'     => 'indexAction'
     ]
 );
-$map->get('user_new', '/user/new',
+$map->get('user_api_list', '/api/user',
     [
-        'controller' => 'App\Controllers\UserController',
+        'controller' => 'App\Controllers\Api\UserController',
+        'action'     => 'indexAction'
+    ]
+);
+$map->post('user_api_create', '/api/user',
+    [
+        'controller' => 'App\Controllers\Api\UserController',
         'action'     => 'createAction'
     ]
 );
-$map->post('user_save', '/user/new',
+$map->get('user_api_view', '/api/user/{id}',
     [
-        'controller' => 'App\Controllers\UserController',
-        'action'     => 'createAction'
+        'controller' => 'App\Controllers\Api\UserController',
+        'action'     => 'viewAction'
     ]
 );
 
+$map->get('user.new', '/user/new',
+    [
+        'controller' => 'App\Controllers\UserController',
+        'action'     => 'createAction'
+    ]
+);
+$map->post('user.save', '/user/new',
+    [
+        'controller' => 'App\Controllers\UserController',
+        'action'     => 'createAction'
+    ]
+);
+$map->get('user.view', '/user/{id}',
+    [
+        'controller' => 'App\Controllers\UserController',
+        'action'     => 'viewAction'
+    ]
+);
+
+
 $matcher = $routerContainer->getMatcher();
 $route   = $matcher->match($request);
+
+// add route attributes to the request
+//http://auraphp.com/packages/3.x/Router/getting-started.html
+foreach ($route->attributes as $key => $val) {
+    $request = $request->withAttribute($key, $val);
+}
 
 if(!$route){
     echo '404 - Not Found';

@@ -1,41 +1,34 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Api;
 
 use App\Models\User;
 use Respect\Validation\Exceptions\NestedValidationException;
 use Respect\Validation\Validator;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\Response\JsonResponse;
 use Zend\Diactoros\ServerRequest;
 
-class UserController extends BaseController {
+class UserController {
 
     /**
-     * @return \Zend\Diactoros\Response\HtmlResponse
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
+     * @return JsonResponse
      */
     public function indexAction(){
-        $users = User::all();
-        return $this->renderHTML('Users/index.twig',
-            [
-                'users' => $users->toArray(),
-                'title' => 'Listado de Usuarios'
-            ]
-        );
+        $users = User::select('id', 'firstname', 'lastname', 'email')->get();
+        $response = ($users) ? $users->toArray() : null;
+        return new JsonResponse($response, ($response) ? 200 : 404);
     }
 
     /**
      * @param ServerRequest $request
-     * @return \Zend\Diactoros\Response\HtmlResponse
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
+     * @return JsonResponse
      */
     public function createAction(ServerRequest $request)
     {
         if($request->getMethod() == 'POST'){
             $data = $request->getParsedBody();
+            return new JsonResponse($data, 200);
 
             $userValidator = Validator::key('firstname',Validator::stringType()->notEmpty())
                 ->key('lastname',Validator::stringType()->notEmpty())
@@ -44,7 +37,6 @@ class UserController extends BaseController {
 
             try{
                 $userValidator->assert($data);
-
                 $user = new User();
                 $user->firstname = $data['firstname'];
                 $user->lastname = $data['lastname'];
@@ -52,40 +44,23 @@ class UserController extends BaseController {
                 $user->password = md5($data['password']);
                 $user->save();
 
+                return new JsonResponse(true, 201);
             }catch (NestedValidationException $e){
                 $errors = $e->getMessages();
+                return new JsonResponse($errors, 400);
             }
         }
-
-        return isset($user) ? $this->indexAction() :
-            $this->renderHTML('Users/new.twig',
-            [
-                'title'  => 'Nuevo usuario',
-                'user'   => ($data) ? $data : null,
-                'errors' => ($errors) ? $errors : null
-            ]
-        );
     }
 
     /**
      * @param ServerRequest $request
-     * @return \Zend\Diactoros\Response\HtmlResponse
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
+     * @return JsonResponse
      */
     public function viewAction(ServerRequest $request)
     {
         $id = (int) $request->getAttribute('id');
-
         $user = User::query()->find($id);
-        $userData = $user->toArray();
 
-        return $this->renderHTML('Users/show.twig',
-                [
-                    'title'  => 'Ver usuario',
-                    'user'   => $userData
-                ]
-            );
+        return ($user) ? new JsonResponse($user->toArray(), 200) : new JsonResponse(null, 404);
     }
 }
