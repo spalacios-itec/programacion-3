@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use Twig\Loader\FilesystemLoader;
 use Twig\Environment;
-use Zend\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
 
 class BaseController {
 

@@ -5,9 +5,9 @@ namespace App\Controllers\Api;
 use App\Models\User;
 use Respect\Validation\Exceptions\NestedValidationException;
 use Respect\Validation\Validator;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\Response\JsonResponse;
-use Zend\Diactoros\ServerRequest;
+use Laminas\Diactoros\Response;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\ServerRequest;
 
 class UserController {
 

@@ -31,7 +31,7 @@ $capsule->setAsGlobal();
 $capsule->bootEloquent();
 
 //Get Request
-$request = Zend\Diactoros\ServerRequestFactory::fromGlobals(
+$request =  Laminas\Diactoros\ServerRequestFactory::fromGlobals(
     $_SERVER,
     $_GET,
     $_POST,
